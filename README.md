@@ -71,8 +71,9 @@ Server will be available at `http://localhost:8000`
 mcp install main.py --name "Hyperliquid Info"
 ```
 
-**Railway Cloud Deployment:**
-See [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md) for complete deployment guide.
+**Cloud Deployment:**
+- [FREE_SSE_HOSTING.md](FREE_SSE_HOSTING.md) - Free hosting options with SSE transport
+- [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md) - Railway-specific deployment guide
 
 ### Example Usage
 

@@ -65,8 +65,10 @@ https://your-service-name-production.up.railway.app
 
 **API Endpoints:**
 - **Health Check:** Use the `health_check` tool via MCP client
-- **MCP Protocol:** The server runs on the root path `/` using MCP protocol over HTTP
+- **MCP Protocol:** The server runs on the root path `/` using MCP protocol over SSE (Server-Sent Events)
 - **All Tools:** Access via MCP client (get_user_state, get_all_mids, etc.)
+
+**Note:** This server now uses SSE transport which is optimal for Railway's free hosting.
 
 ## Testing the Deployment
 

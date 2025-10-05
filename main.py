@@ -13,10 +13,16 @@ import iso8601
 
 info = Info(constants.MAINNET_API_URL, skip_ws=True)  # Initialize Info for mainnet
 
-# Create MCP server
+# Create MCP server with host configuration
+import os
+host = os.getenv("HOST", "0.0.0.0")
+port = int(os.getenv("PORT", 8000))
+
 mcp = FastMCP(
     name="Hyperliquid Info",
-    dependencies=["hyperliquid-python-sdk", "pillow", "python-iso8601"]
+    dependencies=["hyperliquid-python-sdk", "pillow", "python-iso8601"],
+    host=host,
+    port=port
 )
 
 # Tool: Get user state
@@ -418,11 +424,5 @@ def analyze_positions(account_address: str) -> List[base.Message]:
     ]
 
 if __name__ == "__main__":
-    import os
-
-    # Get host and port from environment variables for Railway deployment
-    host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", 8000))
-
-    # Run the MCP server with HTTP transport for Railway
-    mcp.run(transport="http", host=host, port=port)
+    # Run the MCP server with SSE transport (good for free hosting)
+    mcp.run(transport="sse")
