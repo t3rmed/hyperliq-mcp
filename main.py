@@ -375,6 +375,27 @@ async def get_spot_metadata(include_asset_ctxs: bool=False, ctx: Context=None) -
     except Exception as e:
         return json.dumps({"error": f"Failed to fetch spot metadata: {str(e)}"})
 
+# Health check tool for monitoring
+@mcp.tool()
+async def health_check(ctx: Context) -> str:
+    """
+    Simple health check endpoint to verify the server is running.
+
+    Parameters:
+        ctx (Context): The MCP context object for accessing server state.
+
+    Returns:
+        str: JSON string with server status and timestamp.
+    """
+    import json
+    from datetime import datetime
+
+    return json.dumps({
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "server": "Hyperliquid Info MCP"
+    })
+
 # Prompt: Analyze user positions
 @mcp.prompt()
 def analyze_positions(account_address: str) -> List[base.Message]:
@@ -403,5 +424,5 @@ if __name__ == "__main__":
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", 8000))
 
-    # Run the MCP server
-    mcp.run(host=host, port=port)
+    # Run the MCP server with HTTP transport for Railway
+    mcp.run(transport="http", host=host, port=port)

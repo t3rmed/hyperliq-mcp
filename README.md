@@ -54,14 +54,25 @@ An MCP server that provides real-time data and insights from the Hyperliquid per
 ## Usage
 
 ### Running the Server
-Run the server in development mode with MCP Inspector:
+
+**Local Development (STDIO):**
 ```bash
 mcp dev main.py
 ```
-Or install it for use in Claude Desktop:
+
+**Local HTTP Server:**
+```bash
+python main.py
+```
+Server will be available at `http://localhost:8000`
+
+**Claude Desktop Integration:**
 ```bash
 mcp install main.py --name "Hyperliquid Info"
 ```
+
+**Railway Cloud Deployment:**
+See [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md) for complete deployment guide.
 
 ### Example Usage
 

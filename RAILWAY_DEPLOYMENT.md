@@ -64,9 +64,9 @@ https://your-service-name-production.up.railway.app
 ```
 
 **API Endpoints:**
-- **Health Check:** `GET /health` (if implemented)
-- **MCP Protocol:** The server runs on the root path `/` using MCP protocol
-- **WebSocket/HTTP:** Depends on MCP client implementation
+- **Health Check:** Use the `health_check` tool via MCP client
+- **MCP Protocol:** The server runs on the root path `/` using MCP protocol over HTTP
+- **All Tools:** Access via MCP client (get_user_state, get_all_mids, etc.)
 
 ## Testing the Deployment
 
