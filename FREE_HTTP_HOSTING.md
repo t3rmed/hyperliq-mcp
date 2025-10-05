@@ -1,15 +1,16 @@
-# Free SSE Hosting Guide
+# Free HTTP Hosting Guide
 
-This guide covers how to deploy your Hyperliquid Info MCP Server using SSE (Server-Sent Events) transport on free hosting platforms.
+This guide covers how to deploy your Hyperliquid Info MCP Server using Streamable HTTP transport on free hosting platforms.
 
-## Why SSE?
+## Why Streamable HTTP?
 
-SSE (Server-Sent Events) is ideal for free hosting because:
-- ✅ Simple HTTP-based protocol
-- ✅ Works well with reverse proxies
-- ✅ Compatible with most free hosting platforms
-- ✅ Lower resource usage than WebSockets
-- ✅ Built-in reconnection handling
+Streamable HTTP transport is ideal for free hosting because:
+- ✅ Single endpoint - easy to test and use
+- ✅ Current MCP standard (SSE is deprecated)
+- ✅ Works perfectly with reverse proxies
+- ✅ Compatible with all hosting platforms
+- ✅ Simple JSON-RPC over HTTP
+- ✅ Supports both streaming and immediate responses
 
 ## Free Hosting Options
 
@@ -66,9 +67,9 @@ flyctl deploy
 2. `heroku create your-app-name`
 3. `git push heroku main`
 
-## Configuration for SSE
+## Configuration for Streamable HTTP
 
-Your server is already configured for SSE! The key changes:
+Your server is already configured for HTTP! The key changes:
 
 ```python
 # Host/port in constructor
@@ -78,8 +79,8 @@ mcp = FastMCP(
     port=int(os.getenv("PORT", 8000))
 )
 
-# SSE transport in run()
-mcp.run(transport="sse")
+# Streamable HTTP transport in run()
+mcp.run(transport="http", path="/mcp")
 ```
 
 ## Testing Your Deployment
@@ -87,7 +88,7 @@ mcp.run(transport="sse")
 ### 1. Health Check
 Once deployed, test with curl:
 ```bash
-curl -X POST https://your-deployed-url.com/ \
+curl -X POST https://your-deployed-url.com/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -102,7 +103,7 @@ curl -X POST https://your-deployed-url.com/ \
 
 ### 2. Get Market Data
 ```bash
-curl -X POST https://your-deployed-url.com/ \
+curl -X POST https://your-deployed-url.com/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -150,7 +151,7 @@ No additional configuration needed!
 
 Once deployed, connect your MCP clients to:
 ```
-https://your-deployed-url.com
+https://your-deployed-url.com/mcp
 ```
 
 **Available tools:**

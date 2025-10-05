@@ -424,5 +424,5 @@ def analyze_positions(account_address: str) -> List[base.Message]:
     ]
 
 if __name__ == "__main__":
-    # Run the MCP server with SSE transport (good for free hosting)
-    mcp.run(transport="sse")
+    # Run the MCP server with Streamable HTTP transport (best for Railway)
+    mcp.run(transport="http", path="/mcp")

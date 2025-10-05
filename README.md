@@ -72,7 +72,7 @@ mcp install main.py --name "Hyperliquid Info"
 ```
 
 **Cloud Deployment:**
-- [FREE_SSE_HOSTING.md](FREE_SSE_HOSTING.md) - Free hosting options with SSE transport
+- [FREE_HTTP_HOSTING.md](FREE_HTTP_HOSTING.md) - Free hosting options with HTTP transport
 - [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md) - Railway-specific deployment guide
 
 ### Example Usage
