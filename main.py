@@ -16,7 +16,7 @@ info = Info(constants.MAINNET_API_URL, skip_ws=True)  # Initialize Info for main
 # Create MCP server with host configuration
 import os
 host = os.getenv("HOST", "0.0.0.0")
-port = int(os.getenv("PORT", 8000))
+port = int(os.getenv("PORT", 8001))
 
 mcp = FastMCP(
     name="Hyperliquid Info",
@@ -425,4 +425,4 @@ def analyze_positions(account_address: str) -> List[base.Message]:
 
 if __name__ == "__main__":
     # Run the MCP server with Streamable HTTP transport (best for Railway)
-    mcp.run(transport="http", path="/mcp")
+    mcp.run(transport="streamable-http", mount_path="/mcp")
