@@ -42,7 +42,8 @@ mcp = FastMCP(
     name="Hyperliquid Info",
     dependencies=["hyperliquid-python-sdk", "pillow", "python-iso8601"],
     host=host,
-    port=port
+    port=port,
+    streamable_http_path="/mcp"  # Use streamable_http_path instead of mount_path
 )
 
 # Note: FastMCP doesn't easily expose the underlying app for middleware
@@ -500,18 +501,22 @@ def analyze_positions(account_address: str) -> List[base.Message]:
 
 if __name__ == "__main__":
     # Run the MCP server with Streamable HTTP transport (best for Railway)
+    # Use streamable_http_path setting from constructor instead of mount_path
+    streamable_http_path = "/mcp"
+
     logger.info("🌟 ===============================================")
     logger.info("🌟 STARTING HYPERLIQUID MCP SERVER")
     logger.info("🌟 ===============================================")
     logger.info(f"🌟 Transport: streamable-http")
-    logger.info(f"🌟 Mount path: /mcp")
-    logger.info(f"🌟 Full server URL: http://{host}:{port}/mcp")
-    logger.info(f"🌟 Health check: http://{host}:{port}/mcp (GET)")
-    logger.info(f"🌟 MCP endpoint: http://{host}:{port}/mcp (POST)")
+    logger.info(f"🌟 Streamable HTTP path: {streamable_http_path}")
+    logger.info(f"🌟 Full server URL: http://{host}:{port}{streamable_http_path}")
+    logger.info(f"🌟 Health check: http://{host}:{port}{streamable_http_path} (GET)")
+    logger.info(f"🌟 MCP endpoint: http://{host}:{port}{streamable_http_path} (POST)")
+    logger.info(f"🌟 ⚠️  FIX: Using streamable_http_path to avoid redirects")
     logger.info("🌟 ===============================================")
 
     try:
-        mcp.run(transport="streamable-http", mount_path="/mcp")
+        mcp.run(transport="streamable-http")
     except Exception as e:
         logger.error(f"🔴 FATAL ERROR: Failed to start server: {e}")
         logger.error(f"🔴 Exception type: {type(e).__name__}")
