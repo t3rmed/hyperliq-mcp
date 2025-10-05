@@ -1,0 +1,6 @@
+hyperliquid-python-sdk>=0.15.0
+iso8601>=2.1.0
+mcp[cli]>=1.9.1
+pillow>=11.2.1
+uvicorn>=0.37.0
+starlette>=0.48.0
