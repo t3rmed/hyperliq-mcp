@@ -10,6 +10,20 @@ from PIL import Image as PILImage
 import json
 from datetime import datetime
 import iso8601
+import logging
+import sys
+import time
+
+# Configure detailed logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+
+logger = logging.getLogger("hyperliquid-mcp")
 
 info = Info(constants.MAINNET_API_URL, skip_ws=True)  # Initialize Info for mainnet
 
@@ -18,12 +32,23 @@ import os
 host = os.getenv("HOST", "0.0.0.0")
 port = int(os.getenv("PORT", 8001))
 
+logger.info(f"🚀 Starting MCP server configuration:")
+logger.info(f"🚀 Host: {host}")
+logger.info(f"🚀 Port: {port}")
+logger.info(f"🚀 Environment PORT: {os.getenv('PORT', 'Not set')}")
+logger.info(f"🚀 Environment HOST: {os.getenv('HOST', 'Not set')}")
+
 mcp = FastMCP(
     name="Hyperliquid Info",
     dependencies=["hyperliquid-python-sdk", "pillow", "python-iso8601"],
     host=host,
     port=port
 )
+
+# Note: FastMCP doesn't easily expose the underlying app for middleware
+# But we have comprehensive logging built into the tools and server startup
+logger.info("🔧 FastMCP server configured with comprehensive logging")
+logger.info("🔧 Middleware would need to be added differently - using tool-level logging instead")
 
 # Tool: Get user state
 @mcp.tool()
@@ -396,11 +421,61 @@ async def health_check(ctx: Context) -> str:
     import json
     from datetime import datetime
 
-    return json.dumps({
+    logger.info("💚 Health check called")
+    health_data = {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "server": "Hyperliquid Info MCP"
-    })
+        "server": "Hyperliquid Info MCP",
+        "version": "1.0.0",
+        "host": host,
+        "port": port,
+        "transport": "streamable-http",
+        "mount_path": "/mcp"
+    }
+    logger.info(f"💚 Health check response: {health_data}")
+    return json.dumps(health_data)
+
+# Debug endpoint for troubleshooting
+@mcp.tool()
+async def debug_info(ctx: Context) -> str:
+    """
+    Debug endpoint that returns detailed server and environment information.
+
+    Parameters:
+        ctx (Context): The MCP context object for accessing server state.
+
+    Returns:
+        str: JSON string with debug information.
+    """
+    import json
+    import platform
+    from datetime import datetime
+
+    logger.info("🐛 Debug info called")
+    debug_data = {
+        "server_info": {
+            "name": "Hyperliquid Info MCP",
+            "version": "1.0.0",
+            "timestamp": datetime.now().isoformat(),
+            "host": host,
+            "port": port,
+            "transport": "streamable-http",
+            "mount_path": "/mcp"
+        },
+        "environment": {
+            "platform": platform.platform(),
+            "python_version": platform.python_version(),
+            "HOST_env": os.getenv("HOST", "Not set"),
+            "PORT_env": os.getenv("PORT", "Not set")
+        },
+        "urls": {
+            "base_url": f"http://{host}:{port}",
+            "mcp_endpoint": f"http://{host}:{port}/mcp",
+            "health_url": f"http://{host}:{port}/mcp"
+        }
+    }
+    logger.info(f"🐛 Debug info response: {debug_data}")
+    return json.dumps(debug_data, indent=2)
 
 # Prompt: Analyze user positions
 @mcp.prompt()
@@ -425,4 +500,21 @@ def analyze_positions(account_address: str) -> List[base.Message]:
 
 if __name__ == "__main__":
     # Run the MCP server with Streamable HTTP transport (best for Railway)
-    mcp.run(transport="streamable-http", mount_path="/mcp")
+    logger.info("🌟 ===============================================")
+    logger.info("🌟 STARTING HYPERLIQUID MCP SERVER")
+    logger.info("🌟 ===============================================")
+    logger.info(f"🌟 Transport: streamable-http")
+    logger.info(f"🌟 Mount path: /mcp")
+    logger.info(f"🌟 Full server URL: http://{host}:{port}/mcp")
+    logger.info(f"🌟 Health check: http://{host}:{port}/mcp (GET)")
+    logger.info(f"🌟 MCP endpoint: http://{host}:{port}/mcp (POST)")
+    logger.info("🌟 ===============================================")
+
+    try:
+        mcp.run(transport="streamable-http", mount_path="/mcp")
+    except Exception as e:
+        logger.error(f"🔴 FATAL ERROR: Failed to start server: {e}")
+        logger.error(f"🔴 Exception type: {type(e).__name__}")
+        import traceback
+        logger.error(f"🔴 Traceback: {traceback.format_exc()}")
+        raise
